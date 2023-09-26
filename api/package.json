@@ -1,0 +1,15 @@
+{
+  "name": "bun_app",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun --hot run src/index.ts"
+  },
+  "dependencies": {
+    "bunrest": "^1.3.6"
+  },
+  "devDependencies": {
+    "bun-types": "1.0.3"
+  },
+  "module": "src/index.js"
+}
