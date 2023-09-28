@@ -33,9 +33,13 @@ onMounted(() => {
     <div>
         <h1>Posts</h1>
         <ul>
-            <li v-for="(item) in posts" :key="`item-${item.id}`" @click="redirect(item)">
+            <li
+                v-for="(item) in posts"
+                :key="`item-${item.id}`"
+                @click="redirect(item)"
+            >
                 {{ item.title }}
-                <br />->
+                <br />
                 {{ item.body }}
             </li>
         </ul>

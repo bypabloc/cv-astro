@@ -1,68 +1,156 @@
-import server from "bunrest";
+import { type Serve } from "bun";
 
-const app = server();
-const todosMap: Map<Number, String> = new Map();
+type Middleware = (req: any, res: any, next: () => void) => void;
+type RequestHandler = (req: any, res: any) => Response;
 
+const loggerMiddleware: Middleware = (req, res, next) => {
+  const url = new URL(req.url);
+  const method = req.method;
+  const currentTime = new Date().toISOString();
+
+  console.log(`[${currentTime}] ${method} - ${url.pathname}`);
+  next();
+};
+
+class Router {
+  routes: { [method: string]: { [path: string]: RequestHandler } } = {};
+
+  get(path: string, handler: RequestHandler) {
+    this.addRoute("GET", path, handler);
+  }
+
+  post(path: string, handler: RequestHandler) {
+    this.addRoute("POST", path, handler);
+  }
+
+  put(path: string, handler: RequestHandler) {
+    this.addRoute("PUT", path, handler);
+  }
+
+  private addRoute(method: string, path: string, handler: RequestHandler) {
+    if (!this.routes[method]) {
+      this.routes[method] = {};
+    }
+    this.routes[method][path] = handler;
+  }
+}
+
+class Server {
+  middlewares: Middleware[] = [];
+  routes: { [method: string]: { [path: string]: RequestHandler } } = {};
+
+  use(middleware: Middleware) {
+    this.middlewares.push(middleware);
+  }
+
+  get(path: string, handler: RequestHandler) {
+    this.addRoute("GET", path, handler);
+  }
+
+  post(path: string, handler: RequestHandler) {
+    this.addRoute("POST", path, handler);
+  }
+
+  // Agregar más métodos HTTP según sea necesario
+
+  private addRoute(method: string, path: string, handler: RequestHandler) {
+    if (!this.routes[method]) {
+      this.routes[method] = {};
+    }
+    this.routes[method][path] = handler;
+  }
+
+  useRouter(path: string, router: Router) {
+    for (const [method, routes] of Object.entries(router.routes)) {
+      for (const [routePath, handler] of Object.entries(routes)) {
+        const fullPath = path + routePath;
+        this.addRoute(method, fullPath, handler);
+      }
+    }
+  }
+
+  async fetch(request: Request, server: Server): Promise<Response> {
+    try {
+      if (!request || !server) {
+        console.error("Request o Server no definidos");
+        return new Response("Internal Server Error", { status: 500 });
+      }
+
+      const url = new URL(request.url);
+      const pathname = url.pathname;
+      const method = request.method;
+
+      let response: Response;
+
+      // Ejecutamos los middlewares en orden
+      for (const middleware of this.middlewares) {
+        middleware(request, response, () => {});
+      }
+
+      if (this.routes[method] && this.routes[method][pathname]) {
+        const handler = this.routes[method][pathname];
+        response = handler(request, new Response(""));
+      } else {
+        throw new Error("Route not found"); // Lanza un error si la ruta no se encuentra
+      }
+
+      return response;
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+      return new Response(error.message, { status: 500 });
+    }
+  }
+}
+
+const app = new Server();
+
+app.use(loggerMiddleware);
+
+// Agregar middlewares
 app.use((req, res, next) => {
-  console.log("middlewares called");
-
-  console.log("req", req);
-  console.log("req.headers", req.headers);
-  console.log("req.body", req.body);
-  console.log("req.params", req.params);
-  console.log("req.query", req.query);
-
-  // to return result
+  console.log("Middleware 1");
   next();
 });
 
+// Agregar rutas
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Hello World" });
+  res = new Response("Hello, world!", { status: 200 });
+  return res;
 });
 
-app.post("/todos", (req, res) => {
-  if (typeof req.body === "object") {
-    const todo: any = req.body.todo;
-    const todo_id = todo.id;
-    todosMap.set(todo_id, todo);
-    res.status(201).json(todo);
-  } else {
-    res.status(400).json({ error: "Invalid todo" });
-  }
+const router = new Router();
+
+router.get("", (req, res) => {
+  return new Response(JSON.stringify({ message: "aaaaaaaaaa" }), {
+    status: 200,
+  });
 });
-app.get("/todos", (req, res) => {
-  res.status(200).json(Array.from(todosMap.values()));
+
+router.post("", (req, res) => {
+  return new Response(JSON.stringify({ message: "Router POST succeed" }), {
+    status: 200,
+  });
 });
-app.get("/todos/:id", (req, res) => {
-  const todo_id = req.params?.id;
-  const todo = todosMap.get(todo_id);
-  if (todo) {
-    res.status(200).json(todo);
-  } else {
-    res.status(404).json({ error: "Todo not found" });
-  }
+
+router.put("", (req, res) => {
+  return new Response(JSON.stringify({ message: "Router PUT succeed" }), {
+    status: 200,
+  });
 });
-app.put("/todos/:id", (req, res) => {
-  const todo_id = req.params?.id;
-  const todo = todosMap.get(todo_id);
-  if (typeof req.body === "object" && todo) {
-    const todo: any = req.body.todo;
-    todosMap.set(todo_id, todo);
-    res.status(200).json(todo);
-  } else {
-    res.status(404).json({ error: "Todo not found" });
-  }
-});
-app.delete("/todos/:id", (req, res) => {
-  const todo_id = req.params?.id;
-  const todo = todosMap.get(todo_id);
-  if (todo) {
-    todosMap.delete(todo_id);
-    res.status(204).send("deleted");
-  } else {
-    res.status(404).json({ error: "Todo not found" });
-  }
-});
-app.listen(8000, () => {
-  console.log("Server started on port 8000");
-});
+
+app.useRouter("/test", router);
+
+// Iniciar el servidor
+export default {
+  port: 8000,
+  fetch(req) {
+    return app.fetch(req, app);
+  },
+  error(error: Error) {
+    return new Response(`<pre>${error}\n${error.stack}</pre>`, {
+      headers: {
+        "Content-Type": "text/html",
+      },
+    });
+  },
+} satisfies Serve;
