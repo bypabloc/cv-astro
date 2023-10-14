@@ -116,14 +116,14 @@ app.use((req, res, next) => {
 
 // Agregar rutas
 app.get("/", (req, res) => {
-  res = new Response("Hello, qqqqq!", { status: 200 });
+  res = new Response("Hello, world!", { status: 200 });
   return res;
 });
 
 const router = new Router();
 
 router.get("", (req, res) => {
-  return new Response(JSON.stringify({ message: "wwwww" }), {
+  return new Response(JSON.stringify({ message: "aaaaaaaaaa" }), {
     status: 200,
   });
 });
