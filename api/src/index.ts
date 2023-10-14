@@ -1,3 +1,5 @@
+// Path: api/src/index.ts
+
 import { type Serve } from "bun";
 
 type Middleware = (req: any, res: any, next: () => void) => void;
@@ -114,14 +116,14 @@ app.use((req, res, next) => {
 
 // Agregar rutas
 app.get("/", (req, res) => {
-  res = new Response("Hello, world!", { status: 200 });
+  res = new Response("Hello, qqqqq!", { status: 200 });
   return res;
 });
 
 const router = new Router();
 
 router.get("", (req, res) => {
-  return new Response(JSON.stringify({ message: "aaaaaaaaaa" }), {
+  return new Response(JSON.stringify({ message: "wwwww" }), {
     status: 200,
   });
 });

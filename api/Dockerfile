@@ -1,4 +1,4 @@
-FROM oven/bun:1.0.3-slim
+FROM oven/bun:1.0.6-debian
 
 WORKDIR /api
 
