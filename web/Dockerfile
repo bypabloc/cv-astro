@@ -1,4 +1,4 @@
-FROM oven/bun:1.0.3-slim
+FROM oven/bun:1.0.6-slim
 
 WORKDIR /web
 
@@ -6,4 +6,4 @@ COPY package*.json bun.lockb ./
 RUN bun install
 COPY . .
 
-CMD [ "bun", "run", "dev" ]
+CMD [ "bun", "--hot", "run", "dev" ]

@@ -1,3 +1,5 @@
+// Path: api/src/index.ts
+
 import { type Serve } from "bun";
 
 type Middleware = (req: any, res: any, next: () => void) => void;
