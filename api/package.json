@@ -1,14 +1,25 @@
 {
-  "name": "bun_app",
-  "version": "1.0.50",
+  "name": "api",
+  "module": "index.ts",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun --hot src/index.ts"
-  },
-  "dependencies": {
+    "dev": "bun run --watch ./src/index.ts",
+    "test": "bun test ./tests/**.test.ts"
   },
   "devDependencies": {
-    "bun-types": "1.0.6"
+    "bun-types": "^1.0.6"
   },
-  "module": "src/index.js"
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@bogeychan/elysia-logger": "^0.0.11",
+    "@elysiajs/cors": "^0.7.1",
+    "@elysiajs/swagger": "^0.7.3",
+    "@grotto/logysia": "^0.0.5",
+    "elysia": "^0.7.16",
+    "elysia-autoroutes": "^0.4.0",
+    "elysia-helmet": "^1.0.1",
+    "elysia-rate-limit": "^1.2.0"
+  }
 }
