@@ -9,7 +9,7 @@ import { securitySetup } from "@/startup/security";
 import { autoRoutes } from "@/startup/autoRoutes";
 import { testSetup } from "@/startup/test";
 
-const app = new Elysia();
+export const app = new Elysia();
 
 app.use(securitySetup);
 
@@ -33,7 +33,7 @@ app.get("/", () => ({
   message: "Hello, world! -> from ./src/index.ts",
 }));
 
-app.use(autoRoutes({ routesDir: "/routes", prefix: "/" }));
+app.use(autoRoutes());
 
 app.use(hooksSetup);
 

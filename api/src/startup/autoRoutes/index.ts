@@ -24,6 +24,9 @@ export const autoRoutes = (
 
       const filesList = files.files;
 
+      console.log("routesDir", routesDir);
+      console.log("filesList", filesList);
+
       for (const file of filesList) {
         const { isDirectory, handler, pathRoute, name, method } = file;
         if (isDirectory) {

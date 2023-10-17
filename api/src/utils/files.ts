@@ -57,16 +57,18 @@ class Files {
       this.files = files.flatMap((file) => {
         const { name } = file;
 
-        if (!name.endsWith(".ts") && !file.isDirectory()) return []; // Ignora si no es un archivo TS o un directorio
+        if (!name.endsWith(".ts") && !file.isDirectory()) return [];
 
-        let route = name.replace(/\.[^/.]+$/, ""); // Quita la extensión
+        let route = name.replace(/\.[^/.]+$/, "");
+
+        const matchBracket = route.match(/\[([^\]]+)\]/);
         if (route === "index") {
           route = "";
-        } else if (route.startsWith("[") && route.endsWith("]")) {
-          route = `:${route.slice(1, -1)}`;
+        } else if (matchBracket) {
+          route = `/:${matchBracket[1]}`;
         }
 
-        let newPrefix = `${this._prefix === "/" ? "" : this._prefix}/${route}`;
+        let newPrefix = `${this._prefix === "/" ? "" : this._prefix}${route}`;
 
         return {
           isDirectory: file.isDirectory(),

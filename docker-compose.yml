@@ -9,6 +9,7 @@ networks:
 volumes:
   web_node_modules:
   api_node_modules:
+  test_api_node_modules:
 
 services:
   web:
@@ -36,6 +37,22 @@ services:
       - api_node_modules:/api/node_modules
     ports:
       - 8000:8000
+
+  test_api:
+    container_name: cv_test_api
+    build:
+      context: ./api
+      dockerfile: Dockerfile.test
+    image: test_api
+    networks:
+      - cv_network
+    volumes:
+      - ./api/:/api
+      - test_api_node_modules:/api/node_modules
+    env_file:
+      - project.env
+    depends_on:
+      - api
 
   nginx:
     container_name: cv_nginx
