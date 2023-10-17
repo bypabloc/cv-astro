@@ -1,4 +1,4 @@
-# Path: api/Dockerfile.test
+# Path: api/Dockerfile.test_watch
 
 FROM oven/bun:1.0.6-slim
 
@@ -8,4 +8,4 @@ COPY package*.json bun.lockb ./
 RUN bun install
 COPY . .
 
-CMD [ "bun", "run", "dev" ]
+CMD [ "bun", "run", "test" ]

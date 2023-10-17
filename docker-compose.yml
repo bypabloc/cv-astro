@@ -50,9 +50,25 @@ services:
       - ./api/:/api
       - test_api_node_modules:/api/node_modules
     env_file:
-      - project.env
+      - project.test.env
     depends_on:
       - api
+
+  test_watch_api:
+    container_name: cv_test_watch_api
+    build:
+      context: ./api
+      dockerfile: Dockerfile.test_watch
+    image: test_watch_api
+    networks:
+      - cv_network
+    volumes:
+      - ./api/:/api
+      - test_api_node_modules:/api/node_modules
+    env_file:
+      - project.test.env
+    depends_on:
+      - test_api
 
   nginx:
     container_name: cv_nginx
