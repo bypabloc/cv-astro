@@ -4,13 +4,12 @@
   "type": "module",
   "scripts": {
     "dev": "bun run --hot ./src/index.ts",
+    "test:watch": "nodemon --config nodemon.json",
     "test": "bun test --watch"
   },
   "devDependencies": {
-    "bun-types": "^1.0.6"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+    "bun-types": "^1.0.6",
+    "nodemon": "^3.0.1"
   },
   "dependencies": {
     "@bogeychan/elysia-logger": "^0.0.11",

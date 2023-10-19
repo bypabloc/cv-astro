@@ -1,11 +1,17 @@
 # Path: api/Dockerfile.test_watch
 
-FROM oven/bun:1.0.6-slim
+FROM node:18.18.1
 
 WORKDIR /api
 
-COPY package*.json bun.lockb ./
-RUN bun install
+# Copia los archivos del proyecto
 COPY . .
 
-CMD [ "bun", "run", "test" ]
+# Install dependencies
+RUN npm install
+
+# Install nodemon and bun globally
+RUN npm install -g nodemon@3.0.1 bun@1.0.6
+
+# Comando para ejecutar tu aplicación usando Nodemon
+CMD ["nodemon", "src/index.js"]
