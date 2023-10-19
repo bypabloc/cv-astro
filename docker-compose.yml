@@ -10,6 +10,8 @@ volumes:
   web_node_modules:
   api_node_modules:
   test_api_node_modules:
+  db_nosql_data:
+  test_db_nosql_data:
 
 services:
   web:
@@ -82,3 +84,27 @@ services:
       - api
     ports:
       - 7800:7800
+
+  db_nosql_data:
+    image: mongo:7.0.2
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=yourpassword
+    volumes:
+      - db_nosql_data:/data/db
+    networks:
+      - cv_network
+    ports:
+      - 27017:27017
+
+  test_db_nosql_data:
+    image: mongo:7.0.2
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=yourpassword
+    volumes:
+      - test_db_nosql_data:/data/db
+    networks:
+      - cv_network
+    ports:
+      - 27018:27017

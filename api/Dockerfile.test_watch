@@ -14,4 +14,4 @@ RUN npm install
 RUN npm install -g nodemon@3.0.1 bun@1.0.6
 
 # Comando para ejecutar tu aplicación usando Nodemon
-CMD ["nodemon", "src/index.js"]
+CMD ["bun", "run", "test:watch"]
