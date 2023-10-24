@@ -13,6 +13,19 @@ export const app = new Elysia();
 
 app.use(securitySetup);
 
+
+app.use(
+  swagger({
+    path: "/v1/swagger", // endpoint which swagger will appear on
+    documentation: {
+      info: {
+        title: "Bun.js CRUD app with Elysia.js",
+        version: "1.0.0",
+      },
+    },
+  })
+);
+
 app.use(
   logger({
     /**
@@ -28,6 +41,11 @@ app.use(
   })
 );
 app.use(cors());
+
+app.onError((ctx) => {
+  log.error(ctx, ctx.error.name);
+  return "onError";
+});
 
 app.get("/", () => ({
   message: "Hello, world! -> from ./src/index.ts",

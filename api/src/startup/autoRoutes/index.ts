@@ -2,6 +2,7 @@
 
 import { Elysia } from "elysia";
 import Files from "@/utils/files";
+import { IRequest } from "@/interfaces/request";
 
 export const autoRoutes = (
   options = { routesDir: "/routes", prefix: "/" } as {
@@ -24,9 +25,6 @@ export const autoRoutes = (
 
       const filesList = files.files;
 
-      console.log("routesDir", routesDir);
-      console.log("filesList", filesList);
-
       for (const file of filesList) {
         const { isDirectory, handler, pathRoute, name, method } = file;
         if (isDirectory) {
@@ -36,15 +34,27 @@ export const autoRoutes = (
             prefix,
           })(app);
         } else {
-          if (method === "GET") {
-            app.get(pathRoute, handler());
-          } else if (method === "POST") {
-            app.post(pathRoute, handler());
-          } else if (method === "PUT") {
-            app.put(pathRoute, handler());
-          } else if (method === "DELETE") {
-            app.delete(pathRoute, handler());
-          }
+          const methods: { [key: string]: Function } = {
+            GET: () => {
+              app.get(pathRoute, (app) => {
+                const request: IRequest = {
+                  headers: app.headers,
+                  cookie: app.cookie,
+                  query: app.query,
+                  params: app.params,
+                  body: app?.body,
+                };
+
+                const respHandler = handler(request);
+
+                return respHandler;
+              });
+            },
+            POST: () => app.post(pathRoute, (app) => handler(app)),
+            PUT: () => app.put(pathRoute, (app) => handler(app)),
+            DELETE: () => app.delete(pathRoute, (app) => handler(app)),
+          };
+          methods[method]();
         }
       }
     } catch (error) {

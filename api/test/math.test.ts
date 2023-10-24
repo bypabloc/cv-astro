@@ -9,6 +9,10 @@ describe("GET Users suite", () => {
   it("should return a list of users successfully", async () => {
     const req = new Request(baseUrl);
     const res = await fetch(req);
+    console.log("res", res);
     expect(res.status).toEqual(200);
+
+    const json = await res.json();
+    console.log("json", json);
   });
 });

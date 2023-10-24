@@ -26,7 +26,9 @@ services:
     ports:
       - 3000:3000
     env_file:
-      - project.env
+      - frontend.env
+    depends_on:
+      - api
 
   api:
     container_name: cv_api
@@ -39,6 +41,10 @@ services:
       - api_node_modules:/api/node_modules
     ports:
       - 8000:8000
+    env_file:
+      - backend.env
+    depends_on:
+      - db_nosql_data
 
   test_api:
     container_name: cv_test_api
@@ -52,9 +58,9 @@ services:
       - ./api/:/api
       - test_api_node_modules:/api/node_modules
     env_file:
-      - project.test.env
+      - backend.test.env
     depends_on:
-      - api
+      - test_db_nosql_data
 
   test_watch_api:
     container_name: cv_test_watch_api
@@ -68,7 +74,7 @@ services:
       - ./api/:/api
       - test_api_node_modules:/api/node_modules
     env_file:
-      - project.test.env
+      - backend.test.env
     depends_on:
       - test_api
 
@@ -82,22 +88,28 @@ services:
     depends_on:
       - web
       - api
+      - test_api
+      - test_watch_api
     ports:
       - 7800:7800
 
   db_nosql_data:
+    container_name: cv_db_nosql_data
     image: mongo:7.0.2
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=yourpassword
+      - MONGO_INITDB_ROOT_USERNAME={MONGO_USERNAME:-root}
+      - MONGO_INITDB_ROOT_PASSWORD={MONGO_PASSWORD:-yourpassword}
     volumes:
       - db_nosql_data:/data/db
     networks:
       - cv_network
     ports:
-      - 27017:27017
+      - "${MONGO_PORT:-27017}:27017"
+    env_file:
+      - backend.env
 
   test_db_nosql_data:
+    container_name: cv_test_db_nosql_data
     image: mongo:7.0.2
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
@@ -107,4 +119,6 @@ services:
     networks:
       - cv_network
     ports:
-      - 27018:27017
+      - "${MONGO_PORT:-27018}:27017"
+    env_file:
+      - backend.test.env

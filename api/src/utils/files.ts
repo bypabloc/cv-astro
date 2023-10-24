@@ -7,7 +7,7 @@ interface IFiles {
   name: string;
   route: string;
   pathRoute: string;
-  handler: () => any;
+  handler: Function;
   prefix: string;
   method: string;
 }
@@ -76,7 +76,7 @@ class Files {
           route,
           pathRoute: `${this._prefix}${route}`,
           prefix: newPrefix,
-          handler: () => require(this.filePath + "/" + name).default,
+          handler: require(this.filePath + "/" + name).default,
           method: this._getMethod(name),
         };
       });
