@@ -2,7 +2,7 @@
 
 import { Elysia } from "elysia";
 import Files from "@/utils/files";
-import { IRequest } from "@/interfaces/request";
+import { IRequest } from "@/interfaces/IRequest";
 
 export const autoRoutes = (
   options = { routesDir: "/routes", prefix: "/" } as {
@@ -36,18 +36,32 @@ export const autoRoutes = (
         } else {
           const methods: { [key: string]: Function } = {
             GET: () => {
-              app.get(pathRoute, (app) => {
-                const request: IRequest = {
-                  headers: app.headers,
-                  cookie: app.cookie,
-                  query: app.query,
-                  params: app.params,
-                  body: app?.body,
-                };
+              app.get(pathRoute, async (app) => {
+                try {
+                  const request: IRequest = {
+                    headers: app.headers,
+                    cookie: app.cookie,
+                    params: app.query,
+                    body: app.body || {},
+                  };
+                  const respHandler = await handler(request);
+                  return respHandler;
+                } catch (error) {
+                  console.log(
+                    "Path: api/src/startup/autoRoutes/index.ts",
+                    error
+                  );
 
-                const respHandler = handler(request);
-
-                return respHandler;
+                  return {
+                    statusCode: 200,
+                    body: {
+                      messageCode: "INTERNAL_SERVER_ERROR",
+                      status: "error",
+                      message: "Internal server error.",
+                      data: {},
+                    },
+                  };
+                }
               });
             },
             POST: () => app.post(pathRoute, (app) => handler(app)),

@@ -2,5 +2,6 @@
     "watch": ["src"],
     "ext": ".ts,.js",
     "ignore": [],
-    "exec": "bun run test"
+    "exec": "bun run test",
+    "delay": "2000"
 }

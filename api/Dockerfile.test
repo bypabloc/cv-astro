@@ -1,6 +1,6 @@
 # Path: api/Dockerfile.test
 
-FROM oven/bun:1.0.6-slim
+FROM oven/bun:1.0.7-slim
 
 WORKDIR /api
 

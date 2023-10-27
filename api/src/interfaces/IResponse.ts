@@ -12,10 +12,12 @@ export interface IBody {
   messageCode: String;
   status: String;
   message: String;
-  data: Object;
+  data: {
+    [key: string]: any;
+  };
 }
 
 export interface IResponse {
   body: IBody;
-  statusCode: number;
+  statusCode: EStatusCode;
 }

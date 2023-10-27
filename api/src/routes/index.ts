@@ -1,18 +1,8 @@
-// Path: api/src/routes/index.ts
+import { Hono } from "hono";
+import { styles } from "./styles";
 
-import { IRequest } from "@/interfaces/IRequest";
-import { IResponse } from "@/interfaces/IResponse";
+const routes = new Hono();
 
-export default async (req: IRequest): Promise<IResponse> => {
-  console.log("Hello, world! -> from ./src/routes/index.ts -> req", req);
+routes.route("/styles", styles);
 
-  return {
-    statusCode: 200,
-    body: {
-      messageCode: "HELLO_WORLD",
-      status: "success",
-      message: "Hello, world! -> from ./src/routes/index.ts",
-      data: {},
-    },
-  };
-};
+export { routes };

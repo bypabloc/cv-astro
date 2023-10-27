@@ -1,62 +1,40 @@
 // Path: api/src/index.ts
 
-import { Elysia, t } from "elysia";
-import { cors } from "@elysiajs/cors";
-import { swagger } from "@elysiajs/swagger";
-import { logger, type InferContext } from "@bogeychan/elysia-logger";
-import { hooksSetup } from "@/startup/hooks";
-import { securitySetup } from "@/startup/security";
-import { autoRoutes } from "@/startup/autoRoutes";
-import { testSetup } from "@/startup/test";
+// https://hono.dev/getting-started/bun
 
-export const app = new Elysia();
+import { Hono } from "hono";
+import { logger } from "hono/logger";
+import { cors } from "hono/cors";
+import { prettyJSON } from "hono/pretty-json";
 
-app.use(securitySetup);
+import { routes } from "@/routes";
 
+const api = new Hono();
 
-app.use(
-  swagger({
-    path: "/v1/swagger", // endpoint which swagger will appear on
-    documentation: {
-      info: {
-        title: "Bun.js CRUD app with Elysia.js",
-        version: "1.0.0",
-      },
+api.use("*", logger());
+api.use("*", prettyJSON());
+
+api.use(
+  "/*",
+  cors({
+    origin: (origin) => {
+      return origin.endsWith(".example.com") ? origin : "http://example.com";
     },
+    allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
+    allowMethods: ["POST", "GET", "OPTIONS"],
+    exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
+    maxAge: 600,
+    credentials: true,
   })
 );
 
-app.use(
-  logger({
-    /**
-     * This function will be invoked for each `log`-method called with `context`
-     * where you can pass additional properties that need to be logged
-     */
-    customProps(ctx: InferContext<typeof app>) {
-      return {
-        params: ctx.params,
-        query: ctx.query,
-      };
-    },
-  })
-);
-app.use(cors());
+api.route("/", routes);
 
-app.onError((ctx) => {
-  log.error(ctx, ctx.error.name);
-  return "onError";
-});
-
-app.get("/", () => ({
-  message: "Hello, world! -> from ./src/index.ts",
-}));
-
-app.use(autoRoutes());
-
-app.use(hooksSetup);
+api.notFound((c) => c.json({ message: "Not Found" }, 404));
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
-  console.log(`🦊 - Elysia is running at ${app.server?.hostname}:${PORT}`);
-});
+export default {
+  port: PORT,
+  fetch: api.fetch,
+};
