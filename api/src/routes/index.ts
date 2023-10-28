@@ -1,3 +1,5 @@
+// Path: api/src/routes/index.ts
+
 import { Hono } from "hono";
 import { styles } from "./styles";
 

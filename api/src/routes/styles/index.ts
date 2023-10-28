@@ -1,4 +1,8 @@
+// Path: api/src/routes/styles/index.ts
+
 import { Hono } from "hono";
+
+import { validateSavePayload } from "./middlewares";
 
 const styles = new Hono();
 
@@ -6,9 +10,16 @@ styles.get("/", async (ctx: any) => {
   return ctx.json({ message: "Styles get!" });
 });
 
-styles.post("/", async (ctx: any) => {
-  const body = await ctx.body();
-  return ctx.json({ message: `Styles post ${body}!` });
+styles.post("/", validateSavePayload, async (ctx: any) => {
+  const { name, css, userId } = ctx.data;
+  console.log("api/src/routes/styles/index.ts: { name, css, userId }", {
+    name,
+    css,
+    userId,
+  });
+  return ctx.json({
+    message: `Styles post ${JSON.stringify({ name, css, userId })}!`,
+  });
 });
 
 styles.get("/:id", async (ctx: any) => {
