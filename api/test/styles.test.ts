@@ -14,7 +14,7 @@ describe("GET Users suite", () => {
     Accept: "application/json",
   };
 
-  it("GET /aa", async () => {
+  it("GET /", async () => {
     const req = new Request(baseUrl + basePath);
     const res = await fetch(req, {
       headers,
@@ -29,7 +29,6 @@ describe("GET Users suite", () => {
     const body = {
       css: "test",
       name: "test",
-      // userId is uuid v4
       userId: "c4a0b0e0-9f1a-4b1a-8b1a-0b1a0b1a0b1a",
     };
     const req = new Request(baseUrl + basePath, {

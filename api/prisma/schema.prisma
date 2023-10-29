@@ -1,0 +1,60 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+model User {
+  userId        String    @id @default(auto()) @map("_id")
+  nickname      String
+  email         String    @unique
+  passwordHash  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Style {
+  styleId    String   @id @default(auto()) @map("_id")
+  css        String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [userId])
+  userId     String   // Foreign key
+}
+
+// ... otros modelos ...
+
+model PersonalData {
+  userId          String   @id @default(auto()) @map("_id")
+  firstName       String
+  lastName        String
+  documentNumber  String
+  documentType    DocumentType @relation(fields: [documentTypeId], references: [typeId])
+  documentTypeId  String // Foreign key
+  birthdate       DateTime
+  description     String
+  skills          String[]
+  mobileNumber    String
+  countryCode     CountryCode @relation(fields: [countryCodeId], references: [codeId])
+  countryCodeId   String // Foreign key
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model DocumentType {
+  typeId    String   @id @default(auto()) @map("_id")
+  typeName  String
+  // ... relaciones inversas si son necesarias ...
+}
+
+model CountryCode {
+  codeId    String   @id @default(auto()) @map("_id")
+  codeValue String
+  // ... relaciones inversas si son necesarias ...
+}
+
+// ... otros modelos ...
+
+model Base {
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime? // Nullable para soft deletes
+}

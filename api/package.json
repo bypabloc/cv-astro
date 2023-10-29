@@ -3,6 +3,11 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
+    "prisma:generate:dev": "prisma generate --dotenv ../backend.env",
+    "prisma:generate:test": "prisma generate --dotenv ../backend.test.env",
+    "migrate:dev": "prisma migrate dev --dotenv ../backend.env",
+    "migrate:test": "prisma migrate dev --dotenv ../backend.test.env",
+
     "dev": "bun run --hot ./src/index.ts",
     "test:watch": "nodemon --config nodemon.json",
     "test": "bun test --watch"
@@ -12,7 +17,8 @@
     "nodemon": "^3.0.1"
   },
   "dependencies": {
-    "hono": "^3.8.4",
+    "hono": "^3.9.0",
+    "prisma": "^5.5.2",
     "zod": "^3.22.4"
   }
 }

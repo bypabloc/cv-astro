@@ -96,29 +96,36 @@ services:
   db_nosql_data:
     container_name: cv_db_nosql_data
     image: mongo:7.0.2
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME={MONGO_USERNAME:-root}
-      - MONGO_INITDB_ROOT_PASSWORD={MONGO_PASSWORD:-yourpassword}
     volumes:
       - db_nosql_data:/data/db
     networks:
       - cv_network
     ports:
-      - "${MONGO_PORT:-27017}:27017"
+      - "${DB_PORT:-27017}:27017"
     env_file:
       - backend.env
+
+  mongo-express:
+    container_name: cv_mongo_express
+    image: mongo-express
+    restart: always
+    env_file:
+      - backend.env
+    ports:
+      - 8084:8081
+    depends_on:
+      - db_nosql_data
+    networks:
+      - cv_network
 
   test_db_nosql_data:
     container_name: cv_test_db_nosql_data
     image: mongo:7.0.2
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=yourpassword
     volumes:
       - test_db_nosql_data:/data/db
     networks:
       - cv_network
     ports:
-      - "${MONGO_PORT:-27018}:27017"
+      - "${DB_PORT:-27018}:27017"
     env_file:
       - backend.test.env
