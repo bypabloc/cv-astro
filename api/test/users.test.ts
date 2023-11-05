@@ -7,7 +7,7 @@ const baseUrl = `http://cv_test_api:8000`;
 describe("GET Users suite", () => {
   console.log("baseUrl", baseUrl);
 
-  const basePath = "/styles";
+  const basePath = "/users";
 
   const headers = {
     "Content-Type": "application/json",

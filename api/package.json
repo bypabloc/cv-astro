@@ -3,22 +3,18 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "prisma:generate:dev": "prisma generate --dotenv ../backend.env",
-    "prisma:generate:test": "prisma generate --dotenv ../backend.test.env",
-    "migrate:dev": "prisma migrate dev --dotenv ../backend.env",
-    "migrate:test": "prisma migrate dev --dotenv ../backend.test.env",
-
     "dev": "bun run --hot ./src/index.ts",
     "test:watch": "nodemon --config nodemon.json",
-    "test": "bun test --watch"
+    "test": "bun test --watch",
+    "bun:reinstall": "rm -rf .bun_cache/ node_modules/ && rm -rf bun.lockb && bun install"
   },
   "devDependencies": {
-    "bun-types": "^1.0.7",
+    "bun-types": "^1.0.8",
     "nodemon": "^3.0.1"
   },
   "dependencies": {
-    "hono": "^3.9.0",
-    "prisma": "^5.5.2",
+    "mongoose": "8.0.0",
+    "hono": "^3.9.2",
     "zod": "^3.22.4"
   }
 }

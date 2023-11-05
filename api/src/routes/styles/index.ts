@@ -3,11 +3,15 @@
 import { Hono } from "hono";
 
 import { validateSavePayload } from "./middlewares";
+import { User } from "@/models/user";
 
 const styles = new Hono();
 
 styles.get("/", async (ctx: any) => {
-  return ctx.json({ message: "Styles get!" });
+  const users = new User();
+  const list = users.findAll();
+
+  return ctx.json({ message: "Styles get!", list });
 });
 
 styles.post("/", validateSavePayload, async (ctx: any) => {

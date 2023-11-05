@@ -1,30 +1,22 @@
 # Path: api/Dockerfile
 
-FROM oven/bun:1.0.7-slim
+# Usar la imagen oficial de Bun
+FROM oven/bun:1.0.8-slim
 
 # Establecer el directorio de trabajo
-WORKDIR /api
+WORKDIR /usr/src/app
 
-# Copiar los archivos package.json y bun.lockb al contenedor
-COPY package*.json bun.lockb ./
+# Copiar los archivos de definición de dependencias primero para aprovechar la capa de caché de Docker
+COPY package.json bun.lockb ./
 
 # Instalar las dependencias de la aplicación
 RUN bun install
 
-# Copiar los esquemas de Prisma al contenedor
-COPY prisma ./prisma/
+# Copiar los archivos del proyecto
+COPY . .
 
-# # Copiar el archivo entrypoint.sh al contenedor y darle permisos de ejecución
-# COPY entrypoint.sh ./
-
-# # Darle permisos de ejecución al archivo entrypoint.sh
-# RUN chmod +x entrypoint.sh
-
-# # Copiar el resto de los archivos al contenedor
-# COPY . .
-
-# # Establecer el archivo entrypoint.sh como el punto de entrada de tu contenedor
-# ENTRYPOINT ["/api/entrypoint.sh"]
+# Exponer el puerto que tu app utiliza
+EXPOSE 8000
 
 # Comando por defecto a ejecutar cuando se inicia el contenedor
-CMD [ "bun", "run", "dev" ]
+CMD ["bun", "run", "--hot", "src/index.ts"]

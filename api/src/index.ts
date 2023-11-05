@@ -28,6 +28,10 @@ api.use(
   })
 );
 
+api.use("/*", (c) => {
+  console.log("Middleware 1");
+});
+
 api.route("/", routes);
 
 api.notFound((c) => c.json({ message: "Not Found" }, 404));

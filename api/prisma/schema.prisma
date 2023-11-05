@@ -20,8 +20,6 @@ model Style {
   userId     String   // Foreign key
 }
 
-// ... otros modelos ...
-
 model PersonalData {
   userId          String   @id @default(auto()) @map("_id")
   firstName       String
@@ -50,8 +48,6 @@ model CountryCode {
   codeValue String
   // ... relaciones inversas si son necesarias ...
 }
-
-// ... otros modelos ...
 
 model Base {
   createdAt  DateTime @default(now())

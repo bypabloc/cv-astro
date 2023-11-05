@@ -1,50 +1,42 @@
-import {
-  prop,
-  getModelForClass,
-  pre,
-  ReturnModelType,
-} from "@typegoose/typegoose";
+// Path: api/src/models/base/index.ts
 
-export class Base {
-  @prop()
-  public createdAt?: Date;
+import { Document, Model, model, Schema } from "mongoose";
 
-  @prop()
-  public updatedAt?: Date;
-
-  @prop()
-  public deletedAt?: Date;
-
-  // Método para guardar un documento
-  public static async saveDocument(
-    this: ReturnModelType<typeof Base>,
-    doc: InstanceType<ReturnModelType<typeof Base>>
-  ) {
-    doc.createdAt = new Date();
-    return await doc.save();
-  }
-
-  // Método para actualizar un documento
-  public static async updateDocument(
-    this: ReturnModelType<typeof Base>,
-    filter: any,
-    update: any
-  ) {
-    update.updatedAt = new Date(); // Asegúrate de actualizar la marca de tiempo
-    return await this.findOneAndUpdate(filter, update, { new: true }).exec();
-  }
-
-  // Método para eliminar un documento
-  public static async deleteDocument(
-    this: ReturnModelType<typeof Base>,
-    filter: any,
-    update: any
-  ) {
-    update.deletedAt = new Date();
-    return await this.findOneAndUpdate(filter, update, { new: true }).exec();
-  }
+export interface IBase extends Document {
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
 }
 
-export const BaseModel = getModelForClass(Base);
+export class Base<T extends Document> {
+  private model: Model<T>;
 
-export type BaseDocument = InstanceType<typeof Base>;
+  constructor(schema: Schema, collectionName: string) {
+    this.model = model<T>(collectionName, schema);
+  }
+
+  async findAll(page: number = 1, limit: number = 10) {
+    return this.model
+      .find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+  }
+
+  async findOne(id: string) {
+    return this.model.findById(id);
+  }
+
+  async create(data: Partial<T>) {
+    return new this.model(data).save();
+  }
+
+  async update(id: string, data: Partial<T>) {
+    return this.model.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  async delete(id: string) {
+    return this.model.findByIdAndDelete(id);
+  }
+
+  // Otros métodos que necesites
+}
