@@ -1,9 +1,9 @@
 # Path: api/Dockerfile.test
 
-FROM oven/bun:1.0.8-slim
+FROM oven/bun:1.0.9-slim
 
 # Establecer el directorio de trabajo
-WORKDIR /api
+WORKDIR /usr/src/app
 
 # Copiar los archivos package.json y bun.lockb al contenedor
 COPY package*.json bun.lockb ./

@@ -1,7 +1,7 @@
 # Path: api/Dockerfile
 
 # Usar la imagen oficial de Bun
-FROM oven/bun:1.0.8-slim
+FROM oven/bun:1.0.9-slim
 
 # Establecer el directorio de trabajo
 WORKDIR /usr/src/app
@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 8000
 
 # Comando por defecto a ejecutar cuando se inicia el contenedor
-CMD ["bun", "run", "--hot", "src/index.ts"]
+CMD ["bun", "run", "dev"]

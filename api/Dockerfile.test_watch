@@ -1,17 +1,35 @@
+
 # Path: api/Dockerfile.test_watch
 
-FROM node:18.18.1
+FROM oven/bun:1.0.9-slim
 
-WORKDIR /api
+# Establecer el directorio de trabajo
+WORKDIR /usr/src/app
 
-# Copia los archivos del proyecto
+# Instalar dependencias necesarias para obtener la última versión de watchexec
+# RUN apt-get update && \
+#     apt-get install -y curl xz-utils jq && \
+#     # LATEST_RELEASE=$(curl -s https://api.github.com/repos/watchexec/watchexec/releases/latest | jq -r '.tag_name' | sed 's/^v//') && \
+#     LATEST_RELEASE="1.14.1" && \
+#     WATCHEXEC_URL="https://github.com/watchexec/watchexec/releases/download/v${LATEST_RELEASE}/watchexec-${LATEST_RELEASE}-x86_64-unknown-linux-gnu.tar.xz" && \
+#     curl -sSL $WATCHEXEC_URL | tar -xJ && \
+#     mv watchexec-${LATEST_RELEASE}-x86_64-unknown-linux-gnu/watchexec /usr/local/bin/ && \
+#     chmod +x /usr/local/bin/watchexec
+
+# Instalar dependencias necesarias y descargar watchexec
+RUN apt-get update && \
+    apt-get install -y curl xz-utils && \
+    curl -L "https://github.com/watchexec/watchexec/releases/download/1.14.1/watchexec-1.14.1-x86_64-unknown-linux-gnu.tar.xz" | tar xJ && \
+    mv watchexec-1.14.1-x86_64-unknown-linux-gnu/watchexec /usr/local/bin/ && \
+    chmod +x /usr/local/bin/watchexec
+
+# Copiar los archivos package.json y bun.lockb al contenedor
+COPY package.json bun.lockb ./
+
+# Instalar las dependencias de la aplicación
+RUN bun install
+
+# Copiar el resto de los archivos del proyecto
 COPY . .
 
-# Install dependencies
-RUN npm install
-
-# Install nodemon and bun globally
-RUN npm install -g nodemon@3.0.1 bun@1.0.8
-
-# Comando para ejecutar tu aplicación usando Nodemon
-CMD ["bun", "run", "test:watch"]
+CMD ["watchexec", "--watch", "src", "--watch", "test", "--exts", "ts", "--", "bun", "run", "test:watch"]

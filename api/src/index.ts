@@ -28,9 +28,10 @@ api.use(
   })
 );
 
-api.use("/*", (c) => {
-  console.log("Middleware 1");
-});
+// api.use("/*", (c) => {
+//   const test = "test";
+//   console.log("Middleware 1");
+// });
 
 api.route("/", routes);
 

@@ -15,6 +15,8 @@ describe("GET Users suite", () => {
   };
 
   it("GET /", async () => {
+    const test = "testaaaaaa";
+
     const req = new Request(baseUrl + basePath);
     const res = await fetch(req, {
       headers,

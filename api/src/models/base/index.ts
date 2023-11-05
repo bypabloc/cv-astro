@@ -2,6 +2,7 @@
 
 import { Document, Model, model, Schema } from "mongoose";
 
+    const test = "test";
 export interface IBase extends Document {
   createdAt: Date;
   updatedAt: Date;
