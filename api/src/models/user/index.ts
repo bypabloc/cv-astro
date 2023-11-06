@@ -1,3 +1,5 @@
+// Path: api/src/models/user/index.ts
+
 import { Schema } from "mongoose";
 import { Base, IBase } from "@/models/base";
 

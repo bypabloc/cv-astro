@@ -1,16 +1,21 @@
-// Path: api/src/routes/styles/middlewares.ts
+// Path: api/src/routes/users/middlewares.ts
 
 import { save } from "./validations";
 
 export const validateSavePayload = async (c, next) => {
   const body = await c.req.json();
+
+  console.log("c.req", c.req);
+
+  console.log("body", body);
+  console.log("typeof body", typeof body);
   const result = save.safeParse(body);
 
   if (!result.success) {
     // El payload no es válido, responder con un error.
     return c.json(
       { error: "Payload no válido", details: result.error.issues },
-      400
+      401
     );
   }
 

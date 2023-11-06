@@ -23,6 +23,10 @@ RUN apt-get update && \
     mv watchexec-1.14.1-x86_64-unknown-linux-gnu/watchexec /usr/local/bin/ && \
     chmod +x /usr/local/bin/watchexec
 
+# Instalar netcat para verificar la disponibilidad del servicio test_api
+RUN apt-get update && \
+    apt-get install -y curl xz-utils netcat
+
 # Copiar los archivos package.json y bun.lockb al contenedor
 COPY package.json bun.lockb ./
 
@@ -32,4 +36,6 @@ RUN bun install
 # Copiar el resto de los archivos del proyecto
 COPY . .
 
-CMD ["watchexec", "--watch", "src", "--watch", "test", "--exts", "ts", "--", "bun", "run", "test:watch"]
+# CMD ["watchexec", "--watch", "src", "--watch", "test", "--exts", "ts", "--", "bun", "run", "test:watch"]
+
+CMD sh -c 'while ! nc -z test_api 8000; do sleep 1; done; watchexec --watch src --watch test --exts ts -- bun run test:watch'

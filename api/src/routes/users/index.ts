@@ -15,14 +15,24 @@ users.get("/", async (ctx: any) => {
 });
 
 users.post("/", validateSavePayload, async (ctx: any) => {
-  const { name, css, userId } = ctx.data;
-  console.log("api/src/routes/users/index.ts: { name, css, userId }", {
-    name,
-    css,
-    userId,
+  const { nickname, email, password } = ctx.data;
+  console.log("api/src/routes/users/index.ts: { nickname, email, password }", {
+    nickname,
+    email,
+    password,
   });
+
+  const userModel = new User();
+  const user = await userModel.create({
+    nickname,
+    email,
+    passwordHash: password,
+  });
+
+  console.log("user", user);
+
   return ctx.json({
-    message: `users post ${JSON.stringify({ name, css, userId })}!`,
+    message: `users post ${JSON.stringify({ nickname, email, password })}!`,
   });
 });
 

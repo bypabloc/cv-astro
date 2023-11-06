@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 8000
 
 # Comando por defecto a ejecutar cuando se inicia el contenedor
-CMD ["bun", "run", "dev"]
+CMD ["bun", "run", "start:dev"]

@@ -1,7 +1,9 @@
+// Path: api/src/routes/users/validation.ts
+
 import { z } from "zod";
 
 export const save = z.object({
-  name: z.string().min(1),
-  css: z.string().min(1),
-  userId: z.string().uuid(),
+  nickname: z.string().min(6),
+  email: z.string().min(6),
+  password: z.string().min(8),
 });

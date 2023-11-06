@@ -15,7 +15,7 @@ class Connection {
 
   public connect(uri: string): void {
     mongoose
-      .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+      .connect(uri)
       .then(() => console.log("Conexión exitosa a MongoDB"))
       .catch((error) => console.error("Error conectando a MongoDB:", error));
   }
