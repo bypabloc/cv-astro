@@ -4,11 +4,6 @@ import { save } from "./validations";
 
 export const validateSavePayload = async (c, next) => {
   const body = await c.req.json();
-
-  console.log("c.req", c.req);
-
-  console.log("body", body);
-  console.log("typeof body", typeof body);
   const result = save.safeParse(body);
 
   if (!result.success) {

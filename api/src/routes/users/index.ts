@@ -8,10 +8,18 @@ import { User } from "@/models/user";
 const users = new Hono();
 
 users.get("/", async (ctx: any) => {
-  const users = new User();
-  const list = users.findAll();
+  const userModel = new User();
+  const list = await userModel.findAll();
 
-  return ctx.json({ message: "users get!", list });
+  console.log("list", list);
+
+  return ctx.json({
+    message: "users get!",
+    data: {
+      list,
+      quantity: list.length,
+    },
+  });
 });
 
 users.post("/", validateSavePayload, async (ctx: any) => {
@@ -36,19 +44,19 @@ users.post("/", validateSavePayload, async (ctx: any) => {
   });
 });
 
-users.get("/:id", async (ctx: any) => {
-  const id = ctx.req.param("id");
-  return ctx.json({ message: `users get ${id}!` });
-});
+// users.get("/:id", async (ctx: any) => {
+//   const id = ctx.req.param("id");
+//   return ctx.json({ message: `users get ${id}!` });
+// });
 
-users.put("/:id", async (ctx: any) => {
-  const id = ctx.req.param("id");
-  return ctx.json({ message: `users put ${id}!` });
-});
+// users.put("/:id", async (ctx: any) => {
+//   const id = ctx.req.param("id");
+//   return ctx.json({ message: `users put ${id}!` });
+// });
 
-users.delete("/:id", async (ctx: any) => {
-  const id = ctx.req.param("id");
-  return ctx.json({ message: `users delete ${id}!` });
-});
+// users.delete("/:id", async (ctx: any) => {
+//   const id = ctx.req.param("id");
+//   return ctx.json({ message: `users delete ${id}!` });
+// });
 
 export { users as users };

@@ -1,7 +1,7 @@
 # Path: api/Dockerfile
 
 # Usar la imagen oficial de Bun
-FROM oven/bun:1.0.9-slim
+FROM oven/bun:1.0.13-slim
 
 # Establecer el directorio de trabajo
 WORKDIR /usr/src/app

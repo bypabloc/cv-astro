@@ -1,7 +1,7 @@
 
 # Path: api/Dockerfile.test_watch
 
-FROM oven/bun:1.0.9-slim
+FROM oven/bun:1.0.13-slim
 
 # Establecer el directorio de trabajo
 WORKDIR /usr/src/app
@@ -18,14 +18,10 @@ WORKDIR /usr/src/app
 
 # Instalar dependencias necesarias y descargar watchexec
 RUN apt-get update && \
-    apt-get install -y curl xz-utils && \
-    curl -L "https://github.com/watchexec/watchexec/releases/download/1.14.1/watchexec-1.14.1-x86_64-unknown-linux-gnu.tar.xz" | tar xJ && \
-    mv watchexec-1.14.1-x86_64-unknown-linux-gnu/watchexec /usr/local/bin/ && \
+    apt-get install -y curl xz-utils netcat && \
+    curl -L "https://github.com/watchexec/watchexec/releases/download/cli-v1.20.0/watchexec-1.20.0-x86_64-unknown-linux-gnu.tar.xz" | tar xJ && \
+    mv watchexec-1.20.0-x86_64-unknown-linux-gnu/watchexec /usr/local/bin/ && \
     chmod +x /usr/local/bin/watchexec
-
-# Instalar netcat para verificar la disponibilidad del servicio test_api
-RUN apt-get update && \
-    apt-get install -y curl xz-utils netcat
 
 # Copiar los archivos package.json y bun.lockb al contenedor
 COPY package.json bun.lockb ./
@@ -36,6 +32,4 @@ RUN bun install
 # Copiar el resto de los archivos del proyecto
 COPY . .
 
-# CMD ["watchexec", "--watch", "src", "--watch", "test", "--exts", "ts", "--", "bun", "run", "test:watch"]
-
-CMD sh -c 'while ! nc -z test_api 8000; do sleep 1; done; watchexec --watch src --watch test --exts ts -- bun run test:watch'
+CMD sh -c "while ! nc -z test_api 8000; do sleep 5; done; watchexec --watch src --watch test --exts 'ts,json' -- bun run test:watch"
