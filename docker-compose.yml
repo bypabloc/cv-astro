@@ -9,6 +9,9 @@ networks:
 volumes:
   web_node_modules:
   api_node_modules:
+  test_api_node_modules:
+  db_nosql_data:
+  test_db_nosql_data:
 
 services:
   web:
@@ -23,7 +26,9 @@ services:
     ports:
       - 3000:3000
     env_file:
-      - project.env
+      - frontend.env
+    depends_on:
+      - api
 
   api:
     container_name: cv_api
@@ -32,10 +37,46 @@ services:
     networks:
       - cv_network
     volumes:
-      - ./api/:/api
-      - api_node_modules:/api/node_modules
+      - ./api/:/usr/src/app
+      - api_node_modules:/usr/src/app/node_modules
     ports:
       - 8000:8000
+    env_file:
+      - backend.env
+    depends_on:
+      - db_nosql_data
+
+  test_api:
+    container_name: cv_test_api
+    build:
+      context: ./api
+      dockerfile: Dockerfile.test
+    image: test_api
+    networks:
+      - cv_network
+    volumes:
+      - ./api/:/usr/src/app
+      - test_api_node_modules:/usr/src/app/node_modules
+    env_file:
+      - backend.test.env
+    depends_on:
+      - test_db_nosql_data
+
+  test_watch_api:
+    container_name: cv_test_watch_api
+    build:
+      context: ./api
+      dockerfile: Dockerfile.test_watch
+    image: test_watch_api
+    networks:
+      - cv_network
+    volumes:
+      - ./api/:/usr/src/app
+      - test_api_node_modules:/usr/src/app/node_modules
+    env_file:
+      - backend.test.env
+    depends_on:
+      - test_api
 
   nginx:
     container_name: cv_nginx
@@ -47,5 +88,44 @@ services:
     depends_on:
       - web
       - api
+      - test_api
+      - test_watch_api
     ports:
       - 7800:7800
+
+  db_nosql_data:
+    container_name: cv_db_nosql_data
+    image: mongo:7.0.2
+    volumes:
+      - db_nosql_data:/data/db
+    networks:
+      - cv_network
+    ports:
+      - "${DB_PORT:-27017}:27017"
+    env_file:
+      - backend.env
+
+  mongo-express:
+    container_name: cv_mongo_express
+    image: mongo-express
+    restart: always
+    env_file:
+      - backend.env
+    ports:
+      - 8084:8081
+    depends_on:
+      - db_nosql_data
+    networks:
+      - cv_network
+
+  test_db_nosql_data:
+    container_name: cv_test_db_nosql_data
+    image: mongo:7.0.2
+    volumes:
+      - test_db_nosql_data:/data/db
+    networks:
+      - cv_network
+    ports:
+      - "${DB_PORT:-27018}:27017"
+    env_file:
+      - backend.test.env

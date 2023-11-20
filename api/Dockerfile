@@ -1,11 +1,22 @@
 # Path: api/Dockerfile
 
-FROM oven/bun:1.0.6-slim
+# Usar la imagen oficial de Bun
+FROM oven/bun:1.0.13-slim
 
-WORKDIR /api
+# Establecer el directorio de trabajo
+WORKDIR /usr/src/app
 
-COPY package*.json bun.lockb ./
+# Copiar los archivos de definición de dependencias primero para aprovechar la capa de caché de Docker
+COPY package.json bun.lockb ./
+
+# Instalar las dependencias de la aplicación
 RUN bun install
+
+# Copiar los archivos del proyecto
 COPY . .
 
-CMD [ "bun", "run", "dev" ]
+# Exponer el puerto que tu app utiliza
+EXPOSE 8000
+
+# Comando por defecto a ejecutar cuando se inicia el contenedor
+CMD ["bun", "run", "start:dev"]

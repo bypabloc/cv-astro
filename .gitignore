@@ -18,3 +18,8 @@ pnpm-debug.log*
 
 # ignore env
 project.env
+project.test.env
+
+# ignore env
+# regex if file end with with .env
+*.env
