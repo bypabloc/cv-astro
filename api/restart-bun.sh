@@ -9,11 +9,11 @@ BUN_PID=""
 start_bun() {
   echo "Iniciando Bun..."
   ## run:
-  ## bun run start:dev y bun run test:watch
-  bun run start:dev &
+  ## bun run start:dev
   BUN_PID=$!
 
-  bun run test:watch
+  bun run start:dev
+
   echo "Bun iniciado con PID: $BUN_PID"
 }
 

@@ -1,3 +1,5 @@
+// Path: api/src/database/connection.ts
+
 import mongoose from "mongoose";
 import { config } from "@/config";
 

@@ -1,4 +1,4 @@
-// Path: api/tests/math.test.ts
+// Path: api/test/users.test.ts
 
 import { describe, expect, it, afterAll } from "bun:test";
 
@@ -49,44 +49,5 @@ describe("GET Users suite", () => {
     });
     expect(res.status).toEqual(200);
     console.log("res", res);
-
-    // const json = await res.json();
-    // console.log("json", json);
   });
-
-  // it("GET /:id", async () => {
-  //   const req = new Request(baseUrl + basePath + "/1");
-  //   const res = await fetch(req, {
-  //     headers,
-  //   });
-  //   expect(res.status).toEqual(200);
-
-  //   const json = await res.json();
-  //   console.log("json", json);
-  // });
-
-  // it("PUT /:id", async () => {
-  //   const req = new Request(baseUrl + basePath + "/1", {
-  //     method: "PUT",
-  //     headers,
-  //     body: JSON.stringify({ name: "test" }),
-  //   });
-  //   const res = await fetch(req);
-  //   expect(res.status).toEqual(200);
-
-  //   const json = await res.json();
-  //   console.log("json", json);
-  // });
-
-  // it("DELETE /:id", async () => {
-  //   const req = new Request(baseUrl + basePath + "/1", {
-  //     method: "DELETE",
-  //     headers,
-  //   });
-  //   const res = await fetch(req);
-  //   expect(res.status).toEqual(200);
-
-  //   const json = await res.json();
-  //   console.log("json", json);
-  // });
 });

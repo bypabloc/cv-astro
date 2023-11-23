@@ -24,4 +24,5 @@ COPY . .
 COPY restart-bun.sh /usr/src/app/restart-bun.sh
 RUN chmod +x /usr/src/app/restart-bun.sh
 
-CMD sh -c "watchexec --watch src --watch test --exts 'ts,json' --restart --signal HUP ./restart-bun.sh"
+# CMD sh -c "watchexec --watch src --watch test --exts 'ts,json' --debounce 500 --restart --signal HUP ./restart-bun.sh"
+CMD sh -c "./restart-bun.sh"
