@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "scripts": {
+    "prepare": "husky install",
+    "pre-commit": "lint-staged",
+    "bun:reinstall": "rm -rf .bun_cache/ node_modules/ && rm -rf bun.lockb && bun install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0"
+  }
+}
