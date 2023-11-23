@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# bunx lint-staged
+# bun run lint-staged
+# npm run pre-commit
+
+bun pre-commit.mjs
