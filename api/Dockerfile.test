@@ -1,6 +1,6 @@
 # Path: api/Dockerfile.test
 
-FROM oven/bun:1.0.14-slim
+FROM oven/bun:1.0.15-slim
 
 # Establecer el directorio de trabajo
 WORKDIR /usr/src/app
